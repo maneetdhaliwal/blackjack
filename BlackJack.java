@@ -8,10 +8,12 @@ import java.util.ArrayList;
 /**
  *
  * @author Manee
- */
+ * 
+ * */
 public class BlackJack {
 
-    public static void main(String[] args) {
+    public void starter() {
+
         Random rand = new Random();
         Scanner scan = new Scanner(System.in);
         int n = rand.nextInt(1, 12);
@@ -36,13 +38,16 @@ public class BlackJack {
         ArrayList<String> oppHand = new ArrayList<>();
         oppHand.add(opp1Output);
         oppHand.add(opp2Output);
+        ArrayList<String> selfHand = new ArrayList<>();
+        selfHand.add(nOutput);
+        selfHand.add(mOutput);
         boolean turnOff = false;
-        while (turnOff = false) {
+        while (!turnOff) {
             System.out.println("Press 1 to Hit, 2 to Stand, or 3 to Double");
             int input = scan.nextInt();
             if ((input != 1) && (input != 2) && (input != 3)) {
                 System.out.println("Please enter a valid entry.");
-                input = scan.nextInt();
+                continue;
             }
             
             if (input == 1) {
@@ -96,5 +101,6 @@ public class BlackJack {
                 
             }
         }
+        scan.close();
     }
 }
