@@ -16,6 +16,7 @@ public class BlackJack {
 
         Random rand = new Random();
         Scanner scan = new Scanner(System.in);
+        Wagers wager = new Wagers();
         int n = rand.nextInt(1, 12);
         int m = rand.nextInt(1, 12);
         int opp1 = rand.nextInt(1, 12);
@@ -26,14 +27,14 @@ public class BlackJack {
         String opp2Output = (opp2 == 11) ? "Ace" : String.valueOf(opp2);
         System.out.println("Please enter a 3 digit bet");
         int bet = scan.nextInt();
+        wager.setWager(bet);
         System.out.println("Your hand has a: " + nOutput + " and a " + mOutput);
         System.out.println("Opp has a: " + opp1Output + " and a SECRET CARD");
         
         int sum = n + m;
-        if ( sum == 22) {
-            sum = 2;
-        }
-        
+        // in the case of something like A, 5, 5 it should be a black jack and should not allow further options
+        // allow blackjack
+        int sum2 = opp1 + opp2;
         
         ArrayList<String> oppHand = new ArrayList<>();
         oppHand.add(opp1Output);
@@ -53,15 +54,27 @@ public class BlackJack {
             if (input == 1) {
                 int x = rand.nextInt(1, 12);
                 String xOutput = (x == 11) ? "Ace" : String.valueOf(x);
-                System.out.println("Your hand now has a " + mOutput + " and a " + nOutput + " and a " + xOutput);
-                sum = m + n + x;
+                selfHand.add(xOutput);
+                sum += x;
+                System.out.println("You now have a: " + String.join(", ", selfHand));
                 if (sum > 21) {
                     System.out.println("you are out!");
+                    System.out.println("Your opp had a " + opp1Output + " and a " + opp2Output);
+                    wager.Loss();
+                    turnOff = true;
                 }
-                System.out.println("Your opp has a " + opp1Output + " and a " + opp2Output);
-                int sum2 = opp1 + opp2;
-                
-                while (sum2 < 22) {
+                               
+            }
+            
+            if (input == 2) {
+                System.out.println("Your opp had a " + opp1Output + " and a " + opp2Output);
+                if (sum2 > sum && sum2 < 22) {
+                        System.out.println("Opp has won!"); 
+                        wager.Win();
+                        turnOff = true;
+                    }
+                boolean winner = false;
+                while (!winner) {
                     int z = rand.nextInt(1, 12);
                     String zOutput = (z == 11) ? "Ace" : String.valueOf(z);
                     sum2 += z;
@@ -69,36 +82,74 @@ public class BlackJack {
                     System.out.println("Your opp has decided to Hit. They now have: " + String.join(", ", oppHand));
                     if (sum2 == sum) {
                         System.out.println("Push!");
+                        wager.Push();
+                        winner = true;
                         break;
                     }
-                                       
+                    else if (sum2 > 21) {
+                        System.out.println("You have won! Your earnings are: " + bet * 2);
+                        wager.Win();
+                        winner = true;
+                        break; 
+                    }
                     else if (sum2 > sum && sum2 < 22) {
                         System.out.println("Opp has won!");
+                        wager.Loss();
                         break;
                     }
-                  
+                    else continue;
                 }
-                
-                
-                if (sum2 > 22) {
-                    System.out.println("You have won! Your earnings are: " + bet * 2);
-                    turnOff = true;
-                    break;
-                } 
-               
-            }
-            
-            if (input == 2) {
-                System.out.println("Your opp had a " + opp1Output + " and a " + opp2Output);
+                turnOff = true;
             }
             
             if (input == 3) {
+                // fix this
                 bet = bet*2;
                 System.out.println("Stakes has been doubled!");
                 int x = rand.nextInt(1, 12);
                 String xOutput = (x == 11) ? "Ace" : String.valueOf(x);
                 System.out.println("Your hand now has a " + mOutput + " and a " + nOutput + " and a " + xOutput);
-                
+                System.out.println("Your opp had a " + opp1Output + " and a " + opp2Output);
+
+                if (sum2 == sum) {
+                    System.out.println("Push!");
+                    wager.Push();
+                    break;
+                }
+
+                boolean winner = false;
+                while (winner) {
+                    int z = rand.nextInt(1, 12);
+                    String zOutput = (z == 11) ? "Ace" : String.valueOf(z);
+                    sum2 += z;
+                    oppHand.add(zOutput);
+                    System.out.println("Your opp has decided to Hit. They now have: " + String.join(", ", oppHand));
+                    if (sum2 == sum) {
+                        System.out.println("Push!");
+                        wager.Push();
+                        winner = true;
+                        break;
+                    }
+                    else if (sum2 > 21) {
+                        System.out.println("You have won! Your earnings are: " + bet * 2);
+                        wager.Win();
+                        winner = true;
+                        break; 
+                    }
+                    else if (sum2 > sum && sum2 < 22) {
+                        System.out.println("Opp has won!");
+                        wager.Loss();
+                        break;
+                    }
+                    else continue;
+                }
+                turnOff = true;
+            }
+        }
+        scan.close();
+    }
+}
+
             }
         }
         scan.close();
