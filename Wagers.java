@@ -29,6 +29,10 @@ public class Wagers {
         return this.wager;
     }
         
+    public int getBalance() {
+        return this.balance;
+    }
+
     public String Push() {
         this.balance += this.wager;
         return "Push!";
@@ -37,6 +41,11 @@ public class Wagers {
     public String Win() {
         this.balance += this.wager * 2;
         return "You have won: $" + this.wager * 2;
+    }
+
+    public String BlackJack() {
+        this.balance += (this.wager * 2) + (this.wager / 2);
+        return "BlackJack! You have won: $" + (this.wager * 2) + (this.wager / 2);
     }
     
     public String Loss() {
